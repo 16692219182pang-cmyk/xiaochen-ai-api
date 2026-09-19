@@ -1,89 +1,125 @@
-# 小辰 AI · 国产大模型 API
+# 小辰 AI · GPT API
 
-> OpenAI 兼容接口 · DeepSeek / GLM / Kimi / MiniMax · **价格约为官方目录价 1 折起**
+> OpenAI 兼容接口 · GPT Luna / GPT Terra / GPT-5.5 · 按量计费
 
-一个可直接接入的国产大模型 API 网关。注册即送 0.05 余额试用，OpenAI SDK / Claude Code / Cherry Studio / 各类客户端改一行 Base URL 就能用。
+小辰 AI 是一个面向开发者的 OpenAI 兼容 GPT API 入口。已有使用 OpenAI SDK、curl 或其他兼容客户端的项目，只需要替换 Base URL，并在控制台创建自己的 API Key，即可开始调用。
 
-## ✨ 亮点
+## 当前服务
 
-- **便宜**：按官方目录价约 1 折计费（模型组倍率 0.1x / 0.2x），缓存命中价格更低
-- **模型全**：DeepSeek V4（Flash / Pro / Vision）、GLM、Kimi、MiniMax、Mimo 等主流国产模型
-- **1M 上下文**：支持超长上下文与视觉输入
-- **标准协议**：OpenAI 兼容，`/v1/chat/completions`、流式、函数调用都支持
-- **国内直连**：国内线路入口，响应快
-- **充值方便**：卡密购买、在线兑换、订单查询一条龙
+- OpenAI 兼容接口，支持 `chat/completions` 与流式调用
+- 当前提供 GPT Luna、GPT Terra 和 GPT-5.5
+- 输入、输出、缓存读取、缓存写入分开计费
+- 控制台创建和管理 API Key
+- 注册后可进入控制台查看模型、分组和使用记录
+- 提供在线接入文档与卡密充值
 
-## 🚀 快速开始
+## 快速开始
 
-1. **注册**：<https://new.208314.xyz/sign-up>（邮箱验证后自动送 0.05 余额）
-2. **创建 Key**：控制台 → API 密钥
-3. **接入**：Base URL 换成下面的地址
+1. 注册账号：<https://api.208314.xyz/register>
+2. 完成邮箱验证并登录控制台
+3. 在「API 密钥」页面创建 API Key
+4. 在客户端中将 Base URL 设置为：
 
+```text
+https://api.208314.xyz/v1
 ```
-Base URL: https://new.208314.xyz/v1
-```
+
+完整接入说明：<https://api.208314.xyz/api-quickstart.html>
+
+## 当前模型与分组
+
+| 分组 | 倍率 | 模型 |
+|---|---:|---|
+| GPT Luna | `0.25×` | `gpt-5.6-luna` |
+| GPT Terra | `0.049×` | `gpt-5.6-terra`、`gpt-5.5` |
+
+完整可用模型以登录后控制台及 `/v1/models` 返回为准。
+
+## 客户实际价格
+
+以下为已经包含分组倍率的客户实际价格，单位为 USD / 1M tokens：
+
+| 分组 / 模型 | 输入 | 缓存读取 | 缓存写入 | 输出 |
+|---|---:|---:|---:|---:|
+| GPT Luna / `gpt-5.6-luna` | `$0.05` | `$0.005` | `$0.0625` | `$0.30` |
+| GPT Terra / `gpt-5.6-terra` | `$0.098` | `$0.0098` | `$0.1225` | `$0.588` |
+| GPT Terra / `gpt-5.5` | `$0.245` | — | — | `$1.47` |
+
+账单按输入、缓存读取、缓存写入和输出四类 token 分开计算，最终以控制台使用记录为准。
+
+## 调用示例
 
 ### curl
 
 ```bash
-curl https://new.208314.xyz/v1/chat/completions \
+curl https://api.208314.xyz/v1/chat/completions \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "deepseek-v4-flash-0731",
-    "messages": [{"role": "user", "content": "你好！"}]
+    "model": "gpt-5.6-luna",
+    "messages": [
+      {"role": "user", "content": "你好，请用一句话介绍自己。"}
+    ],
+    "stream": false
   }'
 ```
 
-### Python (OpenAI SDK)
+### Python · OpenAI SDK
 
 ```python
 from openai import OpenAI
 
 client = OpenAI(
     api_key="YOUR_API_KEY",
-    base_url="https://new.208314.xyz/v1",
+    base_url="https://api.208314.xyz/v1",
 )
-resp = client.chat.completions.create(
-    model="deepseek-v4-flash-0731",
-    messages=[{"role": "user", "content": "你好！"}],
+
+response = client.chat.completions.create(
+    model="gpt-5.6-luna",
+    messages=[{"role": "user", "content": "你好"}],
 )
-print(resp.choices[0].message.content)
+
+print(response.choices[0].message.content)
 ```
 
-## 🧠 模型与分组
+## 充值
 
-| 分组 | 说明 | 模型示例 |
-|---|---|---|
-| `0.1x` | 国模中缓存（主力池） | deepseek-v4-flash-0731、deepseek-v4-pro、glm-5.3、kimi-k2.6、mimo-v2.5 等 18 个 |
-| `0.2x` | flash稳定分组 | deepseek-v4-flash、deepseek-v4-flash-vision-exp、glm-5.3-flash |
+卡密购买入口：<https://pay.ldxp.cn/shop/7SK173VS>
 
-完整模型列表见控制台「模型与价格」，或调用 `/v1/models`。
+当前可见面值：`1 / 3 / 5 / 10 / 20 / 50 / 100 元`。
 
-## 💰 价格说明
+购买后回到控制台，在「钱包 → 兑换」输入卡密。购买和兑换是两个步骤。
 
-- 单价以 **官方目录价为基准 × 分组倍率**（0.1x / 0.2x）计算
-- 例：deepseek-v4-flash 官方输入约 1.5 元/M tokens，本站约 **0.15 元/M**（0.1x 档）
-- 缓存命中（相同前缀复用）按 CacheRatio 再打折，长对话/Agent 场景更省
-- 模型价格以控制台实时显示为准
+## 常见问题
 
-## 🔗 链接
+### API Key 放在哪里？
 
-- 控制台 / 注册：<https://new.208314.xyz>
-- API 快速开始文档：<https://208314.xyz/api-quickstart.html>
-- 卡密购买：<https://wzyp.cn/shop/7SK173VS/cvxdiu>
+只放在自己的环境变量、服务端配置或本地客户端中，不要提交到公开仓库、日志或聊天记录。
 
-## ❓ 常见问题
+### 模型列表在哪里看？
 
-- **余额不够**：到钱包购买卡密（面值 1–100 元），回「钱包 → 兑换」输入卡密到账
-- **订单查询**：钱包页「链动订单查询」直达官方查单页（联系方式 / 订单号 + 图形验证码）
-- **报错**：见文档「常见报错」一节（401 / 403 / 429 等含义与处理）
+登录控制台查看，或使用有效 API Key 请求：
 
-## ⚠️ 使用约定
+```text
+GET https://api.208314.xyz/v1/models
+```
 
-- 请勿将 API Key 提交到公开仓库或分享给他人
-- 上游偶发排队会导致首字变慢，属正常现象
-- 遇到问题请联系：**QQ 3043826886**
+### 为什么首字速度会变化？
+
+请求延迟会受到模型、上游调度、并发和临时排队影响。遇到偶发 429/5xx 时，可以降低并发并稍后重试，避免无间隔重复请求。
+
+### 遇到 401 或余额不足怎么办？
+
+确认请求使用了正确的 `Authorization: Bearer YOUR_API_KEY`，并检查控制台余额、API Key 状态和对应分组权限。
+
+## 相关链接
+
+- 首页：<https://api.208314.xyz/home>
+- 登录：<https://api.208314.xyz/login>
+- 注册：<https://api.208314.xyz/register>
+- API 快速开始：<https://api.208314.xyz/api-quickstart.html>
+- 充值入口：<https://pay.ldxp.cn/shop/7SK173VS>
 
 ---
-*小辰 AI · 国产大模型 API 服务*
+
+*小辰 AI · GPT API 聚合服务*
